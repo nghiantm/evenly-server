@@ -1,0 +1,114 @@
+Table users {
+  id uuid [pk]
+  idp_subject text [unique, not null] // OIDC sub
+  email text [unique]
+  display_name text [not null]
+  email_verified boolean [not null, default: false]
+  status text [not null, default: "ACTIVE"]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table groups {
+  id uuid [pk]
+  name text [not null]
+  created_by uuid [not null, ref: > users.id]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table group_members {
+  group_id uuid [not null, ref: > groups.id]
+  user_id uuid [not null, ref: > users.id]
+  role text [not null, default: "MEMBER"] // OWNER, MEMBER
+  joined_at timestamptz [not null]
+  left_at timestamptz
+
+  indexes {
+    (group_id, user_id) [pk]
+    (user_id)
+    (group_id)
+  }
+}
+
+Table expenses {
+  id uuid [pk]
+  group_id uuid [not null, ref: > groups.id]
+  created_by uuid [not null, ref: > users.id]
+  description text
+  currency char(3) [not null, default: "USD"]
+  total_amount numeric(12,2) [not null]
+  expense_date date [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  deleted_at timestamptz
+
+  indexes {
+    (group_id, expense_date)
+    (created_by)
+  }
+}
+
+Table expense_payments {
+  id uuid [pk]
+  expense_id uuid [not null, ref: > expenses.id]
+  payer_id uuid [not null, ref: > users.id]
+  amount numeric(12,2) [not null]
+
+  indexes {
+    (expense_id)
+    (payer_id)
+  }
+}
+
+Table expense_splits {
+  id uuid [pk]
+  expense_id uuid [not null, ref: > expenses.id]
+  user_id uuid [not null, ref: > users.id]
+  amount_owed numeric(12,2) [not null]
+  split_type text // EQUAL, PERCENT, EXACT, SHARE
+
+  indexes {
+    (expense_id)
+    (user_id)
+  }
+}
+
+Table settlements {
+  id uuid [pk]
+  group_id uuid [not null, ref: > groups.id]
+  created_by uuid [not null, ref: > users.id]
+  from_user_id uuid [not null, ref: > users.id]
+  to_user_id uuid [not null, ref: > users.id]
+  currency char(3) [not null, default: "USD"]
+  amount numeric(12,2) [not null]
+  settlement_date date [not null]
+  note text
+  created_at timestamptz [not null]
+
+  indexes {
+    (group_id, settlement_date)
+    (from_user_id)
+    (to_user_id)
+  }
+}
+
+Table group_transfers {
+  id uuid [pk]
+  group_id uuid [not null, ref: > groups.id]
+  expense_id uuid [ref: > expenses.id] // nullable
+  settlement_id uuid [ref: > settlements.id] // nullable
+  from_user_id uuid [not null, ref: > users.id]
+  to_user_id uuid [not null, ref: > users.id]
+  currency char(3) [not null, default: "USD"]
+  amount numeric(12,2) [not null]
+  created_at timestamptz [not null]
+
+  indexes {
+    (group_id, from_user_id, to_user_id)
+    (group_id, to_user_id)
+    (group_id, from_user_id)
+    (expense_id)
+    (settlement_id)
+  }
+}

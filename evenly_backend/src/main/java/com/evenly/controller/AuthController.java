@@ -27,19 +27,22 @@ public class AuthController {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    //@Autowired
+    //private AuthenticationManager authenticationManager;
 
     @GetMapping("/welcome")
     public String welcome() {
         return "Welcome this endpoint is not secure";
     }
 
+    /*
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody UserInfo userInfo) {
         String message = service.register(userInfo);
         return ResponseEntity.ok(message);
     }
+    */
+
 
     /*
     @GetMapping("/userProfile")
@@ -50,6 +53,7 @@ public class AuthController {
 
      */
 
+    /*
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody AuthDTO authRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -68,6 +72,8 @@ public class AuthController {
 
         return ResponseEntity.ok(loginResponse);
     }
+
+     */
 
     @PostMapping("/refresh")
     public ResponseEntity<RefreshResponseDTO> refresh(@RequestBody RefreshDTO refreshRequest) {

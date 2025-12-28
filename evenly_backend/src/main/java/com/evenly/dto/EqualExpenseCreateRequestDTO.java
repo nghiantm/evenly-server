@@ -19,6 +19,8 @@ public class EqualExpenseCreateRequestDTO {
     @DecimalMin(value = "0.00")
     private BigDecimal amount;
 
+    private String label;
+
     private String description;
 
     private List<String> userIds;

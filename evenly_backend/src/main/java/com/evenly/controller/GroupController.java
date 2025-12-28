@@ -2,8 +2,11 @@ package com.evenly.controller;
 
 import com.evenly.dto.GroupCreateRequestDTO;
 import com.evenly.dto.GroupCreateResponseDTO;
+import com.evenly.dto.GroupsResponseDTO;
 import com.evenly.entity.Group;
 import com.evenly.exception.MissingArgumentException;
+import com.evenly.service.Auth0UserService;
+import com.evenly.service.GroupMemberService;
 import com.evenly.service.GroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,12 +19,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/group")
 public class GroupController {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired
+    private Auth0UserService auth0UserService;
+    @Autowired
+    private GroupMemberService groupMemberService;
 
     @PostMapping
     @Operation(
@@ -72,5 +83,34 @@ public class GroupController {
                 groupService.deleteGroup(groupId),
                 HttpStatus.OK
         );
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GroupsResponseDTO>> getGroups(@RequestHeader("Authorization") String accessToken){
+        // Call /userinfo if additional profile data is needed
+        Map<String, Object> userInfo = auth0UserService.getUserInfo(accessToken);
+
+        // Example: Using user info to fetch roles or customize query
+        String email = (String) userInfo.get("email");
+
+        // Fetch all groups for the user
+        List<Group> userGroups = groupService.getGroups(email);
+
+        // Enrich with member count and map to DTO
+        List<GroupsResponseDTO> groupWithMemberCountList = userGroups.stream()
+                .map(group -> new GroupsResponseDTO(
+                        group.getId(),
+                        group.getName(),
+                        group.getDescription(),
+                        group.getImageUrl(),
+                        group.getCreatedDate(),
+                        group.getCreatorId(),
+                        groupMemberService.getMemberIds(group.getId())
+                ))
+                .toList();
+
+        return ResponseEntity.ok(groupWithMemberCountList);
+
+
     }
 }

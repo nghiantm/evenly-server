@@ -8,13 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ExpenseService {
 
     @Autowired
     ExpenseRepository expenseRepository;
+
+    @Autowired
+    SecurityUtility securityUtility;
 
     public Expense get(String expenseId) {
         if (!expenseRepository.existsById(expenseId)) {
@@ -23,13 +28,18 @@ public class ExpenseService {
         return expenseRepository.getExpenseById(expenseId);
     }
 
+    public List<Expense> getGroupExpenses(String groupId) {
+        return expenseRepository.getExpensesByGroupIdOrderByCreatedDateDesc(groupId);
+    }
+
     public Expense addExpense(EqualExpenseCreateRequestDTO expense) {
         Expense newExpense = new Expense();
+        newExpense.setLabel(expense.getLabel());
         newExpense.setGroupId(expense.getGroupId());
         newExpense.setDescription(expense.getDescription());
         newExpense.setAmount(expense.getAmount());
-        newExpense.setCreatedDate(Date.valueOf(LocalDateTime.now().toLocalDate()));
-        newExpense.setPaidBy(SecurityUtility.getUserId());
+        newExpense.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
+        newExpense.setPaidBy((String) securityUtility.getUserInfo().get("email"));
 
         return expenseRepository.save(newExpense);
     }

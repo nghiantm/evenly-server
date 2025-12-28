@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.util.List;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -24,6 +23,9 @@ public class Expense {
     private String id;
 
     @Column(nullable = false)
+    private String label;
+
+    @Column(nullable = false)
     private String groupId;
 
     @Column(nullable = false)
@@ -35,5 +37,5 @@ public class Expense {
     private String description;
 
     @Column(nullable = false)
-    private Date createdDate;
+    private Timestamp createdDate;
 }

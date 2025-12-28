@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class GroupService {
@@ -28,5 +29,9 @@ public class GroupService {
     public String deleteGroup(String groupId) {
         groupRepository.deleteById(groupId);
         return "Group Deleted Successfully";
+    }
+
+    public List<Group> getGroups(String email) {
+        return groupRepository.findAllByCreatorId(email);
     }
 }

@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AuthControllerTests {
-
+    /*
     @InjectMocks
     private AuthController authController;
 
@@ -38,6 +38,7 @@ class AuthControllerTests {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
 
     @Test
     void testWelcome() {
@@ -87,7 +88,7 @@ class AuthControllerTests {
         verify(jwtService, times(1)).generateToken(mockAuthRequest.getEmail());
     }
 
-     */
+
 
     @Test
     void testLogin_InvalidCredential() {
@@ -107,4 +108,5 @@ class AuthControllerTests {
                 .authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtService, never()).generateToken(anyString());
     }
+    */
 }

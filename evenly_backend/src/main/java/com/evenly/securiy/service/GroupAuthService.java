@@ -17,6 +17,9 @@ public class GroupAuthService {
     @Autowired
     private ExpenseService expenseService;
 
+    @Autowired
+    private SecurityUtility securityUtility;
+
     /**
      * Checks if the current authenticated user is a member of the specified group.
      *
@@ -24,7 +27,10 @@ public class GroupAuthService {
      * @return true if the authenticated user is a member of the group, false otherwise.
      */
     public boolean isMemberOfGroup(String groupId) {
-        return groupMemberService.isMember(groupId, SecurityUtility.getUserId());
+        System.out.print("RUNNING");
+        String email = (String) securityUtility.getUserInfo().get("email");
+        System.out.println(email);
+        return groupMemberService.isMember(groupId, email);
     }
 
     /**
@@ -38,7 +44,7 @@ public class GroupAuthService {
      * @return true if the authenticated user is a member of the group, false otherwise.
      */
     public boolean isMemberOfExpenseGroup(String expenseId) {
-        return groupMemberService.isMember(expenseService.get(expenseId).getGroupId(), SecurityUtility.getUserId());
+        return groupMemberService.isMember(expenseService.get(expenseId).getGroupId(), (String) securityUtility.getUserInfo().get("email"));
     }
 
     /**

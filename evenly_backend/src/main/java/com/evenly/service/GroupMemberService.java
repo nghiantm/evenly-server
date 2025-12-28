@@ -37,4 +37,15 @@ public class GroupMemberService {
         return groupMemberRepository.existsByGroupIdAndUserId(groupId, userId);
     }
 
+    public int getNumberOfMembers(String groupId) {
+        return groupMemberRepository.countByGroupId(groupId);
+    }
+
+    public List<String> getMemberIds(String groupId) {
+        List<GroupMember> groupMembers = groupMemberRepository.findByGroupId(groupId);
+
+        return groupMembers.stream()
+                .map(GroupMember::getUserId)
+                .toList();
+    }
 }

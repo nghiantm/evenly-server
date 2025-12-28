@@ -18,8 +18,8 @@ public class UserInfoService implements UserDetailsService {
     @Autowired
     private UserInfoRepository repository;
 
-    @Autowired
-    private PasswordEncoder encoder;
+    //@Autowired
+    //private PasswordEncoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -30,6 +30,7 @@ public class UserInfoService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
+    /*
     public String register(UserInfo userInfo) {
         if (repository.existsByEmail(userInfo.getEmail())) {
             throw new InvalidCredentialException("Email already exists.");
@@ -51,4 +52,6 @@ public class UserInfoService implements UserDetailsService {
 
         return userDetail.get();
     }
+
+     */
 }

@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpenseCreateResponseDTO {
     private String id;
+
+    private String label;
 
     private String groupId;
 
@@ -21,5 +23,5 @@ public class ExpenseCreateResponseDTO {
 
     private String description;
 
-    private Date createdDate;
+    private Timestamp createdDate;
 }
