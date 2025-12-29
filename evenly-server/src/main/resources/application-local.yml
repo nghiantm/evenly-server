@@ -12,6 +12,15 @@ spring:
   flyway:
     enabled: true
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://holy-bluegill-66.clerk.accounts.dev/.well-known/jwks.json
+
+clerk:
+  audience: https://api.evenly.app
+
 logging:
   level:
     org.springframework.boot.autoconfigure.jdbc: DEBUG
